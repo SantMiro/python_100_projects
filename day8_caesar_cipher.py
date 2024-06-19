@@ -26,11 +26,11 @@ end_of_game = False # Set variable to end the app
 while end_of_game == False: 
     direction = input('Type "encode" or "decode" to start: \n') #Ask user if they want to encode or decode.
 
-    word = input('Type your word: \n').lower()
+    word = input('Type your message: \n').lower()
     shift = int(input('Type the shift number: \n'))
     shift = shift % 26
     result = caesar_encoder(word,shift,direction)
-    print(f"Your {direction}d word is: {result}.\n")
+    print(f"Your {direction}d message is: {result}.\n")
     
     print('Do you want to try a new word?\n')
     check_user = input('Type "yes" if you want to try again and "no" if you want to stop.') 
