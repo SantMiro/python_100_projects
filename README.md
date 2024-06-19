@@ -1,0 +1,1 @@
+This is a collection of a 100 Python projects from begginers to advanced.
