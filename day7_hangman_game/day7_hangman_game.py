@@ -40,11 +40,11 @@ while not end_of_game:
         print('\n',f"{' '.join(prediction)}",'\n')
 
         if guess not in word:
-            print(f'The letter {guess} is not in the word. You lose one live.')
             lives -=1
+            print(f'The letter {guess} is not in the word. You have {lives} lives remaining.')
             if lives == 0:
                 end_of_game = True
-                print('You lose.')
+                print(f'You lose!\nYour word was "{word}".')
 
         if '_ ' not in prediction:
             end_of_game = True
