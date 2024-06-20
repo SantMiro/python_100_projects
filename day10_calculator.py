@@ -19,6 +19,7 @@ operations = {'+':add,
               '-':substract,
               '*':multiply,
               '/':divide}
+
 def calculator():
     end_running = False
     n1 = float(input('What is the first number? '))
