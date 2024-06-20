@@ -21,7 +21,7 @@ operations = {'+':add,
               '/':divide}
 def calculator():
     end_running = False
-    n1 = int(input('What is the first number? '))
+    n1 = float(input('What is the first number? '))
     while not end_running:
 
         
@@ -29,7 +29,7 @@ def calculator():
         for symbol in operations:
             print(symbol)
         symbol = input()
-        n2 = int(input('What is the second number? '))
+        n2 = float(input('What is the second number? '))
 
         ans = operations[symbol](n1,n2)
 
