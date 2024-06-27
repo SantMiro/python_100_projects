@@ -48,4 +48,4 @@ class Snake():
         if self.squares[0].heading() != LEFT:
             self.squares[0].setheading(RIGHT)
 
-
+    
