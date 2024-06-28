@@ -37,6 +37,13 @@ class Snake():
             self.squares[square].goto(new_X,new_y)
         self.squares[0].forward(MOVE_DISTANCE)
 
+
+    def reset(self):
+        for square in self.squares:
+            square.goto(1000,1000)
+        self.squares.clear()
+        self.create_snake()
+
     def up(self):
         if self.squares[0].heading() != DOWN:
             self.squares[0].setheading(UP)

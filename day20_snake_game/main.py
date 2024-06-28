@@ -38,13 +38,15 @@ while game_on:
         snake.increase_size()
 
     if snake.squares[0].xcor() > LIMIT or snake.squares[0].xcor() < -LIMIT or snake.squares[0].ycor() > LIMIT or snake.squares[0].ycor() < -LIMIT:
-        scoreboard.game_over()
-        game_on = False
+        scoreboard.reset()
+        snake.reset()
 
     for square in snake.squares[1:]:
         if snake.squares[0].distance(square) < 10:
-            game_on = False
-            scoreboard.game_over()
+            #game_on = False
+            scoreboard.reset()
+            snake.reset()
+            
 
 
 screen.exitonclick()
