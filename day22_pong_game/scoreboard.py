@@ -23,13 +23,14 @@ class Scoreboard(Turtle):
 
     def score(self,ball):
 
-        if ball.xcor() > 370:
+        if ball.xcor() > 380:
             self.p1_score += 1
-        elif ball.xcor() < -370:
+        elif ball.xcor() < -380:
             self.p2_score += 1
         self.update_score()
         time.sleep(2)
         ball.goto(0,0)
+        ball.move_speed = 0.1
 
     def game_over(self):
         self.goto(0,0)
