@@ -3,16 +3,38 @@ from tkinter import messagebox
 from PIL import Image, ImageTk
 from day5_password_generator import password_generator
 import pyperclip
+import json
 
 # -------------------------------------------RESIZE IMAGE ------------------------------------#
 original_image = Image.open('day29_password_manager/lock.png')
 resized_image = original_image.resize((250, 250), Image.LANCZOS)
+
+# -------------------------------------------SEARCH DATA ------------------------------------#
+def search_data():
+    try:
+        with open('day29_password_manager/data.json','r') as data_file:
+            data = json.load(data_file)
+            web = entry_web.get()
+            data_values = data[web]
+    except FileNotFoundError:
+        messagebox.showerror(title='Oops!',message='No data file found.')
+    except KeyError:
+        messagebox.showerror(title='Oops!',message='Please insert a valid website to search.')
+    else:
+        messagebox.showinfo(title=f'The details for {web}:', message=f'Email: {data_values['Email']}\nPassword: {data_values['Password']}')
 
 # -------------------------------------------SAVE DATA ------------------------------------#
 def save_data():
     web = entry_web.get()
     email = entry_email.get()
     password = entry_pass.get()
+
+    new_data = {
+        web:{
+            'Email':email,
+            'Password':password}
+    }
+    
     proceed = False
     
     if not web or not password or not email:
@@ -21,10 +43,19 @@ def save_data():
         proceed = messagebox.askokcancel(title=web, message=f'This is the provided information:\nEmail: {email}\nPassword: {password}\n Is it okay to save?')
     
     if proceed:
-        with open('day29_password_manager/data.txt','a') as data:
-            data.write(f'{web} | {email} | {password}\n')
-        entry_web.delete(0,END)
-        entry_pass.delete(0,END)
+        try:
+            with open('day29_password_manager/data.json','r') as data_file:
+                data = json.load(data_file)
+                data.update(new_data)
+        except:
+            with open('day29_password_manager/data.json','w') as data_file:
+                json.dump(new_data, data_file, indent = 4)
+        else:
+            with open('day29_password_manager/data.json','w') as data_file:
+                json.dump(data, data_file, indent= 4)
+        finally:   
+            entry_web.delete(0,END)
+            entry_pass.delete(0,END)
 
 # -------------------------------------------RANDOMLY GENERATE PASSWORD ------------------------------------#
 
@@ -69,13 +100,13 @@ label_password = Label(text='Password: ', font=LABEL_FONT, bg=WHITE)
 label_password.grid(column=0,row=3)
 
 # ENTRIES
-entry_web = Entry(width=WIDTH_ENTRIES * 2,font=LABEL_FONT)
-entry_web.grid(column=1,row=1,columnspan=2,padx=0,pady=10)
+entry_web = Entry(width=WIDTH_ENTRIES,font=LABEL_FONT)
+entry_web.grid(column=1,row=1,padx=0,pady=10)
 entry_web.focus()
 
 entry_email = Entry(width=WIDTH_ENTRIES * 2,font=LABEL_FONT)
 entry_email.grid(column=1,row=2,columnspan=2,pady=10)
-entry_email.insert(END,'mirot.santiago@gmail.com')
+entry_email.insert(END,'test@mail.com')
 
 entry_pass = Entry(width=WIDTH_ENTRIES,font=LABEL_FONT)
 entry_pass.grid(column=1,row=3,pady=10)
@@ -86,6 +117,9 @@ button_password.grid(column=2,row=3,pady=10)
 
 button_add = Button(text='Add', width=36, font=LABEL_FONT, bg=BLUE, fg=WHITE, command=save_data)
 button_add.grid(column=1, row=4, columnspan=2,pady=10)
+
+button_search = Button(text='Search', width=16, font= LABEL_FONT, bg=BLUE, fg=WHITE, command=search_data)
+button_search.grid(column=2, row=1, pady=10)
 
 
 
