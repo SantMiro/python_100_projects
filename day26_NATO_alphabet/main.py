@@ -9,18 +9,23 @@
 
 import pandas as pd
 
+alphabet = pd.read_csv('nato_phonetic_alphabet.csv')
+alphabet_dict = {row.letter:row.code for (index,row) in alphabet.iterrows()}
+
 def nato_phonetic():
-    name = input('What is your name? ')
+    name = input('What is your name? ').upper()
 
     if name == 'exit':
         print('Come back soon!')
     else:
-        alphabet = pd.read_csv('day26_NATO_alphabet/nato_phonetic_alphabet.csv')
+        try:
 
-        nato_letters = [next((row.code for (_,row) in alphabet.iterrows() if row.letter == letter.upper()), None) for letter in name]
+            nato_letters = [alphabet_dict[letter] for letter in name]
 
-        print(nato_letters)
-
+        except KeyError:
+            print('Only alphabetical characters supported.')
+        else:
+            print(nato_letters)
         nato_phonetic()
 
 nato_phonetic()
