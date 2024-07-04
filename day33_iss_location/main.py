@@ -2,8 +2,7 @@ import requests
 import googlemaps
 import haversine
 
-API_KEY = 'AIzaSyCybu0gOllRgMfNQ3cqkg6iB-n-JOyE5qk'
-HOME_ADDRESS = (53.51710515320115, -113.51639606186009)
+
 formatted_address_components = []
 
 gmaps = googlemaps.Client(key=API_KEY)
@@ -32,7 +31,7 @@ lat2,long2 = data['origin_addresses'][0].split(',')
 distance = haversine.haversine(float(lat1),float(long1),float(lat2),float(long2))
 #print(distance)
 if len(formatted_address_components) > 1:
-    print(f'The space station is currently over {formatted_address_components[-1]}')
+    print(f'The space station is currently over {formatted_address_components[-1]}.')
     
 else:
     print('The Space Station is currently over the Ocean. Try again in a few minutes.')
