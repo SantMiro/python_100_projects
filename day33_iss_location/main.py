@@ -1,8 +1,17 @@
 import requests
 import googlemaps
 import haversine
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
+API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
+print('Please add your current corrdinates latitude and longitude: ')
+
+user_latitude = float(input('Latitude: '))
+user_longitude = float(input('Longitude: '))
+CURRENT_ADDRESS = (user_latitude, user_longitude)
 formatted_address_components = []
 
 gmaps = googlemaps.Client(key=API_KEY)
@@ -22,7 +31,7 @@ for result in reverse_geocode_result:
     if formatted_address:
         formatted_address_components.append(formatted_address)
 
-URL = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={HOME_ADDRESS[0]},{HOME_ADDRESS[1]}&destinations={latitude},{longitude}&key={API_KEY}'
+URL = f'https://maps.googleapis.com/maps/api/distancematrix/json?origins={CURRENT_ADDRESS[0]},{CURRENT_ADDRESS[1]}&destinations={latitude},{longitude}&key={API_KEY}'
 response = requests.get(URL)
 data = response.json()
 #print(data)
@@ -37,6 +46,6 @@ else:
     print('The Space Station is currently over the Ocean. Try again in a few minutes.')
 
 if data['rows'][0]['elements'][0]['status'] == 'ZERO_RESULTS':
-    print('There is not a driving route to the point')
+    print('There is not a driving route to its current position.')
 
 print(f'Your current distance to the ISS is: {distance:.2f}km.')
