@@ -9,14 +9,21 @@ load_dotenv()
 
 API_KEY = os.getenv('GOOGLE_MAPS_API_KEY')
 print('Please add your current corrdinates latitude and longitude: ')
+street = '81st ave'
+city = 'Edmonton'
+state = 'Alberta'
+postal_code = 'T6G 0S3'
+country = 'Canada'
+address = f"{street}, {city}, {state}, {postal_code}, {country}"
 
-user_latitude = float(input('Latitude: '))
-user_longitude = float(input('Longitude: '))
-CURRENT_ADDRESS = (user_latitude, user_longitude)
-formatted_address_components = []
 
 gmaps = googlemaps.Client(key=API_KEY)
+geocode_result = gmaps.geocode(address)
 
+user_latitude = geocode_result[0]['geometry']['location']['lat']
+user_longitude = geocode_result[0]['geometry']['location']['lng']
+CURRENT_ADDRESS = (user_latitude, user_longitude)
+formatted_address_components = []
 response_iss = requests.get(url = "http://api.open-notify.org/iss-now.json")
 response_iss.raise_for_status()
 
