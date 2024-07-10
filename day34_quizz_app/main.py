@@ -11,13 +11,21 @@ score = 0
 question_display = []
 game_over = False
 
+# ------------------------------- START GAME -------------------------------- #
 def start_game():
-    global questions, counter, score
+    global questions, counter, score, question_display, game_over
+    game_over = False
+    try:
+        canvas.itemconfig(label, text='')
+    except:
+        pass
+    
     questions = get_data()
     counter = 0
     score = 0
     show_question()
 
+# ------------------------------- SHOW QUESTION -------------------------------- #
 def show_question():
     global counter, question_display, correct_answer
     try:
@@ -36,6 +44,7 @@ def show_question():
             text_id = canvas.create_text(200, 120 + i*20, text=line, font=QUESTION_FONT)
             question_display.append(text_id)
 
+# ------------------------------- USER ANSWER -------------------------------- #
 def user_answer(answer):
     global score
     if correct_answer == answer:
@@ -47,23 +56,23 @@ def user_answer(answer):
         temp_background('#FF0000','white')
         show_question()
 
-
+# ------------------------------- TRUE BUTTON -------------------------------- #
 def correct():
     if not game_over:
         user_answer('True')
 
+# ------------------------------- FALSE BUTTON -------------------------------- #
 def incorrect():
     if not game_over:
         user_answer('False')
 
+# ------------------------------- END GAME -------------------------------- #
 def end_game():
-    global game_over
+    global game_over, label
     game_over = True
     for text in question_display:
         canvas.delete(text)
-    canvas.create_text(200, 120, text=f'Game Over\nTotal Score: {score}', font=SCORE_FONT)
-
-
+    label = canvas.create_text(200, 120, text=f'Game Over\nTotal Score: {score}', font=SCORE_FONT)
 
 # ------------------------------- BACKGROUND COLOR -------------------------------- #
 def restore_background_color(bg_color): # Return to default background color
@@ -73,7 +82,7 @@ def temp_background(color,default_bg): # Memontarily change background colors
     canvas.config(bg=color)
     window.after(100, lambda: restore_background_color(default_bg))
 
-
+# ------------------------------- BACKGROUND COLOR -------------------------------- #
 def split_text(text, max_length):
     """Splits text into multiple parts if it exceeds max_length"""
     words = text.split()
@@ -89,6 +98,7 @@ def split_text(text, max_length):
     lines.append(current_line.strip())
     
     return lines
+
 # -------------------------UI DESIGN -----------------------------#
 # WINDOW
 window = Tk()
@@ -97,7 +107,6 @@ window.config(padx=20,pady=20, bg=BACKGROUND_COLOR)
 
 # CANVAS
 canvas = Canvas(width = 400, height=300, highlightthickness=0, )
-#question_display = canvas.create_text(200,120,text='Hi',font=('Courier',20,'normal'))
 canvas.grid(column=0, row=1, columnspan=3)
 
 # LABELS
@@ -105,21 +114,24 @@ score_label = Label(text=f'Score: {score}', bg=BACKGROUND_COLOR,font=SCORE_FONT)
 score_label.grid(column=2, row=0, padx=20,pady=20)
 
 # BUTTONS
+# CHECK MARK
 check_mark_original = Image.open('check_mark.png')
 check_mark_resized = check_mark_original.resize((100, 100))  # Resize to 100x100 pixels
 check_mark_img = ImageTk.PhotoImage(check_mark_resized)
 correct_button = Button(image=check_mark_img, bg=BUTTON_COLOR,command=correct)
 correct_button.grid(column=2,row=2, padx=20, pady=20)
 
+# RED CROSS
 red_cross_original = Image.open('red_cross.png')
 red_cross_resized = red_cross_original.resize((100, 100))  # Resize to 100x100 pixels
 red_cross_img = ImageTk.PhotoImage(red_cross_resized)
 incorrect_button = Button(image=red_cross_img, bg=BUTTON_COLOR,command=incorrect)
 incorrect_button.grid(column=0,row=2, padx=20, pady=20)
 
-
+# NEW GAME 
+new_game = Button(text='New Game',font=SCORE_FONT,command=start_game)
+new_game.grid(column=0,row=0)
 
 start_game()
-
 
 window.mainloop()
