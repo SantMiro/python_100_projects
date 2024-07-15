@@ -19,9 +19,14 @@ class News:
         self.articles = []
 
     def request(self):
-        r = requests.get(self.url,params=self.params)
-        data = r.json()
-        return data
+        try:
+            r = requests.get(self.url,params=self.params)
+            r.raise_for_status()
+        except:
+            print('An error ocurred in news.py')
+        else:
+            data = r.json()
+            return data
     
     def request_sources(self):
         self.url = SOURCES_URL
@@ -49,24 +54,3 @@ class News:
         return self.articles
 
 
-
-
-
-
-
-# response = requests.get(SOURCES_URL, params=params_sources)
-# data = response.json()
-# sources = data['sources']
-# id_list = []
-# for source in sources:
-#     id_list.append(source['id'])
-# id_list = ','.join(id_list)
-# print(id_list)
-# params_headlines = {'apiKey':API_KEY,
-#                     'language':'en',
-#                     'sources':'financial-post'}
-
-# response = requests.get(TOP_HEADLINES_URL, params=params_headlines)
-# data = response.json()
-
-# print(data['articles'][-1])

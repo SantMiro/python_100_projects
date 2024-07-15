@@ -22,9 +22,14 @@ class Stock():
         self.change = 3.
 
     def request(self):
-        r = requests.get(self.url,params=self.params)
-        data = r.json()
-        return data
+        try:
+            r = requests.get(self.url,params=self.params)
+            r.raise_for_status()
+        except:
+            print('An error ocurred in stock.py')
+        else:
+            data = r.json()
+            return data
     
     def get_symbol(self,keyword):
         self.params['keywords'] = str(keyword)
@@ -40,17 +45,23 @@ class Stock():
         self.params['function'] = 'TIME_SERIES_DAILY'
         self.params['symbol'] = self.symbol
         data = self.request()
-        daily_data = data['Time Series (Daily)']
-        return daily_data
+        try:
+            daily_data = data['Time Series (Daily)']
+        except:
+            print(data)
+        else:
+            return daily_data
 
     def daily_change(self):
         data = self.get_daily_data()
         date_format = "%Y-%m-%d"
-        today_date =  datetime.today.date()#datetime.strptime('2024-07-10', date_format).date()
+        today_date = datetime.strptime('2024-07-10', date_format).date()#datetime.today.date()#
         today_date = today_date.strftime(date_format)
         if today_date in data:
             difference = float(data[today_date]['4. close']) - float(data[today_date]['1. open'])
             if difference > self.change:
                 return difference
+            else:
+                print('No change')
 
         

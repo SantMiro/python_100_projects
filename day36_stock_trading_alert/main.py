@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
-ACCOUNT_SID = 'AC859d7aa359c9e964dd662f78ff156297'
+ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
 
 stock = Stock()
 news = News()
