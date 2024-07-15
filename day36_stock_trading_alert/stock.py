@@ -19,7 +19,7 @@ class Stock():
             'function': self.function,
             'apikey': self.apikey,
         }
-        self.change = 2
+        self.change = 3.
 
     def request(self):
         r = requests.get(self.url,params=self.params)
@@ -46,7 +46,7 @@ class Stock():
     def daily_change(self):
         data = self.get_daily_data()
         date_format = "%Y-%m-%d"
-        today_date =  datetime.strptime('2024-07-10', date_format).date()#datetime.today.date()
+        today_date =  datetime.today.date()#datetime.strptime('2024-07-10', date_format).date()
         today_date = today_date.strftime(date_format)
         if today_date in data:
             difference = float(data[today_date]['4. close']) - float(data[today_date]['1. open'])
