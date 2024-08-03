@@ -1,65 +1,37 @@
-import requests
-import os
+from flights import FlightDeals
+from sheets_list import city_list
+#from twilio_alert import SendWhats
 from dotenv import load_dotenv
-
+import os
 load_dotenv()
-# FLIGHT_DEALS_TOKEN = os.getenv('FLIGHT_DEALS_TOKEN')
-# EXCEL_URL = 'https://api.sheety.co/dfeb845ae19c4c45169cac46b21c9926/flightDeals/deals'
-# headers = {"Authorization": f"Bearer {FLIGHT_DEALS_TOKEN}"}
-# ID = 5
-# response = requests.get(EXCEL_URL + '/' + str(ID))
-# #response.raise_for_status()
-# data = response.json()
-# print(data)
+import requests
 
-url = "https://test.api.amadeus.com/v1/security/oauth2/token"
-headers = {
-    "Content-Type": "application/x-www-form-urlencoded"
-}
-data = {
-    "grant_type": "client_credentials",
-    "client_id": os.getenv('AMADEUS_TOKEN'),  # Replace with your actual client_id
-    "client_secret": os.getenv('AMADEUS_SECRET')  # Replace with your actual client_secret
-}
+AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
+ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
+#whats_message = SendWhats(account_sid=ACCOUNT_SID,auth_token=AUTH_TOKEN)
 
-response = requests.post(url, headers=headers, data=data)
-if response.status_code == 200:
-    token_info = response.json()
-    print(token_info)
+querries = city_list()
+
+flights = []
+for city in querries:
+    flight_deals = FlightDeals()
+    flight_deals.max_price = city['lowestPrice']
+    flight_deals.destination = city['iataCode']
+    best_deal = flight_deals.get_flight_deals()
+    if best_deal:
+        flights.append(best_deal[0])
+
+if flights:
+    for flight in flights:
+        text = 'Check the following flight deals: \n\n'
+        text += f"There is a flight from {flight['itineraries'][0]['departure']} arriving to {flight['itineraries'][0]['arrival']} at {flight['itineraries'][0]['date']}.\n\n"
+        text += f"The total cost is {flight['price']} by {flight['itineraries'][0]['carrierCode']} {flight['itineraries'][0]['number']}.\n\n"
+        text += f"The source is {flight['source']}.\n The number of seats is: {flight['numberOfBookableSeats']}.\n"
+        print(text)
 else:
-    print(f"Request failed with status code {response.status_code}")
-    print(response.text)
+    print('No good deals right now.')
+    #message_sid = whats_message.send_message(flights=flights)
 
-AMADEUS_ACCESS_TOKEN = token_info['access_token']
-print(AMADEUS_ACCESS_TOKEN)#os.getenv('AMADEUS_ACCESS_TOKEN')
-
-
-# headers = {"Authorization": f"Bearer {AMADEUS_ACCESS_TOKEN}"}
-# query = {
-#     "keyword": 'Paris',
-#     "max": "2",
-#     "include": "AIRPORTS",
-# }
-# response = requests.get(
-#     url="https://test.api.amadeus.com/v1/reference-data/locations/cities",
-#     headers=headers,
-#     params=query
-# )
-# print(f"Status code {response.status_code}. Airport IATA: {response.text}")
-AMADEUS_URL = "https://test.api.amadeus.com/v2/shopping/flight-offers"
-query = {
-            "originLocationCode": "YYZ",
-            "destinationLocationCode": "PAR",
-            "departureDate": "2024-10-10",
-            "returnDate": "2024-11-10",
-            "adults": 1,
-            #"nonStop": "true",
-            "currencyCode": "GBP",
-            "max": "10",
-        }
-
-header = {"Authorization": f"Bearer {AMADEUS_ACCESS_TOKEN}"}
-response = requests.get(url=AMADEUS_URL,headers=header,params=query)
-response.raise_for_status()
-data = response.json()
-print(data)
+#print(message_sid)
+#print(flights)
+#print(len(flights))
